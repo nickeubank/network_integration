@@ -9,7 +9,7 @@ import sys
 import numpy as np
 
 
-def integration(graph, min_k=0, max_k=1, k_step=1, summarizer=np.mean,
+def integration(graph, min_k=0, max_k=1, k_step=1, aggregation_func=np.mean,
                 debug=False):
     """
     Doc string!
@@ -21,13 +21,13 @@ def integration(graph, min_k=0, max_k=1, k_step=1, summarizer=np.mean,
     max_k: maximium number of steps to be considered (passed as `stop` to
            range, and thus NOT included itself)
     k_step:  Step size for k (passed as `step` to range).
-    summarizer: function applied across nodes for each k to summarize. 
+    aggregation_func: function applied across nodes for each k to summarize. 
            By default, calculates mean of each nodes k-integration score. 
     debug: If True, prints lots of intermediate outcomes for review.            
           
     Returns:
         Pandas Series where index is k for each value, and value is 
-        result of applying `summarizer` to node-level results associated
+        result of applying `aggregation_func` to node-level results associated
         with a given k value.
     
     """
@@ -52,7 +52,7 @@ def integration(graph, min_k=0, max_k=1, k_step=1, summarizer=np.mean,
                 print('num reachable for k {} and node {}: '.format(k, v))
                 print(num_reachable)
         
-    summarized = results.apply(summarizer, axis=0)
+    summarized = results.apply(aggregation_func, axis=0)
     return summarized 
      
      
