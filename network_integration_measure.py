@@ -3,17 +3,15 @@
 ##############
 import pandas as pd
 import igraph as ig
-import os
-import warnings
-import sys
 import numpy as np
-
+import warnings
 
 def integration(graph, min_k=0, max_k=1, k_step=1, aggregation_func=np.mean,
                 debug=False):
     """
-    Doc string!
-
+    Loops over all nodes, and for each node i measures share of other nodes 
+    within k steps of i. Then node-level values are aggregated using 
+    aggregation_func to create a network-level statistic. 
 
     graph: graph object to be analyzed. 
     min_k: minimum number of steps to be considered (passed as `start` to 
@@ -58,7 +56,11 @@ def integration(graph, min_k=0, max_k=1, k_step=1, aggregation_func=np.mean,
      
 def get_vertex_distances(node, graph, max_k, debug):
 
-    paths = graph.get_shortest_paths(node, mode=ig.OUT)
+    # Sends warning if places can't get, but taht's 
+    # accounted for below.     
+    with warnings.catch_warnings():
+        warnings.filterwarnings("ignore", ".*Couldn't reach some vertices at structural_properties.*")
+        paths = graph.get_shortest_paths(node, mode=ig.OUT)
     
     
     # Compute lengths of paths. Zero if unreachable, so 
